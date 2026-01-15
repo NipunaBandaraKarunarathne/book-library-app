@@ -1,9 +1,9 @@
 "use client";
 
 interface RatingStarsProps {
-  value: number;                     // current rating
-  editable?: boolean;                // true for Add/Edit
-  onChange?: (value: number) => void; // required if editable
+  value: number;                     
+  editable?: boolean;                
+  onChange?: (value: number) => void; 
   size?: number;
 }
 

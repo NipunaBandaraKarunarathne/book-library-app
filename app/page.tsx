@@ -55,7 +55,6 @@ export default function HomePage() {
         view={view}
         onToggleView={() => setView(view === "grid" ? "list" : "grid")}
         onSearch={setSearch}
-        onAdd={() => setAddingBook(true)}
       />
 
       <main className="p-4">
@@ -110,4 +109,3 @@ export default function HomePage() {
     </>
   );
 }
-
