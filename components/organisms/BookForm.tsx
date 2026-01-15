@@ -12,7 +12,6 @@ interface Props {
 }
 
 export default function BookForm({ book, onSuccess, onClose }: Props) {
-  // Form fields
   const [form, setForm] = useState({
     title: "",
     author: "",
@@ -20,13 +19,10 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
     coverUrl: "",
   });
 
-  // Rating state (separate)
   const [rating, setRating] = useState(1);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ✅ Sync form & rating when editing or adding
   useEffect(() => {
     if (book) {
       setForm({
@@ -35,7 +31,7 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
         category: book.category,
         coverUrl: book.coverUrl,
       });
-      setRating(book.rating); // important for edit
+      setRating(book.rating);
     } else {
       setForm({
         title: "",
@@ -83,48 +79,102 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
   }
 
   return (
-    <div className="modal">
-      <form className="form" onSubmit={handleSubmit}>
-        <h2>{book ? "Edit Book" : "Add Book"}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 ">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+      >
+        {/* Header */}
+        <h2 className="mb-4 text-xl font-semibold text-gray-800">
+          {book ? "Edit Book" : "Add New Book"}
+        </h2>
 
-        {error && <p className="error">{error}</p>}
+        {/* Error */}
+        {error && (
+          <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+            {error}
+          </p>
+        )}
 
-        <input
-          name="title"
-          value={form.title}
-          placeholder="Title"
-          onChange={handleChange}
-        />
+        {/* Title */}
+        <div className="mb-3">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Title
+          </label>
+          <input
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+           // placeholder="Book title"
+            className="w-full  text-black rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          />
+        </div>
 
-        <input
-          name="author"
-          value={form.author}
-          placeholder="Author"
-          onChange={handleChange}
-        />
+        {/* Author */}
+        <div className="mb-3">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Author
+          </label>
+          <input
+            name="author"
+            value={form.author}
+            onChange={handleChange}
+            //placeholder="Author name"
+            className="w-full text-black rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          />
+        </div>
 
-        <label>Rating</label>
-        <RatingStars value={rating} editable onChange={setRating} />
+        {/* Rating */}
+        <div className="mb-4">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Rating
+          </label>
+          <RatingStars value={rating} editable onChange={setRating} />
+        </div>
 
-        <input
-          name="category"
-          value={form.category}
-          placeholder="Category"
-          onChange={handleChange}
-        />
+        {/* Category */}
+        <div className="mb-3">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Category
+          </label>
+          <input
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+          //  placeholder="Category"
+            className="w-full text-black rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          />
+        </div>
 
-        <input
-          name="coverUrl"
-          value={form.coverUrl}
-          placeholder="Cover Image URL"
-          onChange={handleChange}
-        />
+        {/* Cover URL */}
+        <div className="mb-5">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Cover Image URL
+          </label>
+          <input
+            name="coverUrl"
+            value={form.coverUrl}
+            onChange={handleChange}
+            placeholder="https://example.com/cover.jpg"
+            className="w-full text-black rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          />
+        </div>
 
-        <div className="actions">
-          <button type="button" onClick={onClose}>
+        {/* Actions */}
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+          >
             Cancel
           </button>
-          <button disabled={loading}>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+          >
             {loading ? "Saving..." : "Save"}
           </button>
         </div>

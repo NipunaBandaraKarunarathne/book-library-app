@@ -1,63 +1,71 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Book } from "@/types/book";
-import { getBooks } from "@/services/bookService";
 import BookCard from "./BookCard";
+import { Button } from "flowbite-react";
 
 interface Props {
+  books: Book[];
   view: "grid" | "list";
   search: string;
   onEdit: (book: Book) => void;
   onDelete: (book: Book) => void;
-  deletedBookId?: number | null;
-  onUpdate?: (updatedBook: Book) => void; // new callback
+  onAdd: () => void;
 }
 
-
 export default function BookList({
+  books,
   view,
   search,
   onEdit,
   onDelete,
-  deletedBookId,
+  onAdd,
 }: Props) {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getBooks().then((data) => {
-      setBooks(data);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (deletedBookId) {
-      setBooks((prev) => prev.filter((b) => b.id !== deletedBookId));
-    }
-  }, [deletedBookId]);
-
+  // Filter books by search
   const filtered = books.filter(
     (b) =>
       b.title.toLowerCase().includes(search.toLowerCase()) ||
       b.author.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <p>Loading books...</p>;
-
   return (
-    <section className={`book-list ${view}`}>
-      {filtered.map((book) => (
-        <BookCard
-          key={book.id}
-          book={book}
-          view={view}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      ))}
+    <section className="space-y-4">
+      {/* Top bar: Add button + count */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-gray-800">
+          Books ({filtered.length})
+        </h2>
+
+    
+        <Button outline type="button"  onClick={onAdd}>Add</Button>
+      </div>
+
+      {/* Book grid/list */}
+      <div
+        className={
+          view === "grid"
+            ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            : "flex flex-col gap-3"
+        }
+      >
+        {filtered.map((book) => (
+          <BookCard
+            key={book.id}
+            book={book}
+            view={view}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        ))}
+
+        {filtered.length === 0 && (
+          <p className="text-gray-500 text-center py-4">
+            No books found.
+          </p>
+        )}
+      </div>
     </section>
   );
 }
+
 

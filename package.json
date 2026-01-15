@@ -10,6 +10,8 @@
     "mock": "json-server --watch db.json --port 4000"
   },
   "dependencies": {
+    "flowbite": "^4.0.1",
+    "flowbite-react": "^0.12.16",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",

@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "@/components/templates/NavBar";
 import BookList from "@/components/organisms/BookList";
 import BookForm from "@/components/organisms/BookForm";
 import { Book } from "@/types/book";
 import DeleteDialog from "@/components/molecules/DeleteDialog";
-import { deleteBook } from "@/services/bookService";
+import { deleteBook, getBooks } from "@/services/bookService";
+import ToastContainer from "@/components/molecules/ToastContainer";
+import { useToast } from "@/hooks/useToast";
 
 export default function HomePage() {
+  const [books, setBooks] = useState<Book[]>([]);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [search, setSearch] = useState("");
 
@@ -16,14 +19,34 @@ export default function HomePage() {
   const [addingBook, setAddingBook] = useState(false);
 
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
-  const [deletedBookId, setDeletedBookId] = useState<number | null>(null);
+  const { toasts, addToast } = useToast();
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  async function fetchBooks() {
+    try {
+      const data = await getBooks();
+      setBooks(data);
+    } catch (err) {
+      console.error(err);
+      addToast("Failed to fetch books", "error");
+    }
+  }
 
   async function handleDeleteConfirm() {
     if (!bookToDelete) return;
 
-    await deleteBook(bookToDelete.id);
-    setDeletedBookId(bookToDelete.id);
-    setBookToDelete(null);
+    try {
+      await deleteBook(bookToDelete.id);
+      setBooks((prev) => prev.filter((b) => b.id !== bookToDelete.id));
+      addToast("Book deleted successfully!", "success");
+      setBookToDelete(null);
+    } catch (err) {
+      console.error(err);
+      addToast("Failed to delete book", "error");
+    }
   }
 
   return (
@@ -35,13 +58,14 @@ export default function HomePage() {
         onAdd={() => setAddingBook(true)}
       />
 
-      <main style={{ padding: "1rem" }}>
+      <main className="p-4">
         <BookList
+          books={books}
           view={view}
           search={search}
+          onAdd={() => setAddingBook(true)}
           onEdit={(book) => setEditingBook(book)}
           onDelete={(book) => setBookToDelete(book)}
-          deletedBookId={deletedBookId}
         />
       </main>
 
@@ -49,7 +73,11 @@ export default function HomePage() {
       {addingBook && (
         <BookForm
           onClose={() => setAddingBook(false)}
-          onSuccess={() => setAddingBook(false)}
+          onSuccess={(newBook) => {
+            setBooks((prev) => [...prev, newBook]);
+            addToast("Book added successfully!", "success");
+            setAddingBook(false);
+          }}
         />
       )}
 
@@ -58,7 +86,13 @@ export default function HomePage() {
         <BookForm
           book={editingBook}
           onClose={() => setEditingBook(null)}
-          onSuccess={() => setEditingBook(null)}
+          onSuccess={(updatedBook) => {
+            setBooks((prev) =>
+              prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
+            );
+            addToast("Book updated successfully!", "success");
+            setEditingBook(null);
+          }}
         />
       )}
 
@@ -70,6 +104,10 @@ export default function HomePage() {
           onConfirm={handleDeleteConfirm}
         />
       )}
+
+      {/* Toasts */}
+      <ToastContainer toasts={toasts} />
     </>
   );
 }
+
