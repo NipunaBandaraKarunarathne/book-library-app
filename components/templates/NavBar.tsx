@@ -8,9 +8,10 @@ interface HeaderProps {
   view: "grid" | "list";
   onToggleView: () => void;
   onSearch: (value: string) => void;
+   onAdd: () => void; 
 }
 
-export default function Header({ view, onToggleView, onSearch }: HeaderProps) {
+export default function Header({ view, onToggleView, onSearch, onAdd }: HeaderProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -31,6 +32,9 @@ export default function Header({ view, onToggleView, onSearch }: HeaderProps) {
         <button onClick={onToggleView}>
           {view === "grid" ? <IoList /> : <IoGrid />
 }
+        </button>
+           <button className="primary" onClick={onAdd}>
+          ➕ Add Book
         </button>
       </nav>
     </header>

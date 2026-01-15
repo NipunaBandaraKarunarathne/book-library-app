@@ -9,14 +9,18 @@ interface Props {
   view: "grid" | "list";
   search: string;
   onEdit: (book: Book) => void;
-  updatedBook?: Book | null;
+  onDelete: (book: Book) => void;
+  deletedBookId?: number | null;
+  onUpdate?: (updatedBook: Book) => void; // new callback
 }
+
 
 export default function BookList({
   view,
   search,
   onEdit,
-  updatedBook,
+  onDelete,
+  deletedBookId,
 }: Props) {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,12 +33,10 @@ export default function BookList({
   }, []);
 
   useEffect(() => {
-    if (updatedBook) {
-      setBooks((prev) =>
-        prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
-      );
+    if (deletedBookId) {
+      setBooks((prev) => prev.filter((b) => b.id !== deletedBookId));
     }
-  }, [updatedBook]);
+  }, [deletedBookId]);
 
   const filtered = books.filter(
     (b) =>
@@ -52,6 +54,7 @@ export default function BookList({
           book={book}
           view={view}
           onEdit={onEdit}
+          onDelete={onDelete}
         />
       ))}
     </section>

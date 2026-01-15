@@ -36,3 +36,13 @@ export async function updateBook(book: Book): Promise<Book> {
 
   return res.json();
 }
+
+export async function deleteBook(id: number): Promise<void> {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete book");
+  }
+}

@@ -125,3 +125,31 @@ body {
 }
 
 
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+button.danger {
+  background: #dc2626;
+  color: white;
+}
+
+

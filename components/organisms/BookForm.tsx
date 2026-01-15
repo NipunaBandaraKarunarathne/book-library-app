@@ -1,26 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addBook, updateBook } from "@/services/bookService";
 import { Book } from "@/types/book";
+import RatingStars from "@/components/molecules/RatingStars";
 
 interface Props {
-  book?: Book; 
+  book?: Book;
   onSuccess: (book: Book) => void;
   onClose: () => void;
 }
 
 export default function BookForm({ book, onSuccess, onClose }: Props) {
+  // Form fields
   const [form, setForm] = useState({
-    title: book?.title || "",
-    author: book?.author || "",
-    rating: book?.rating || 1,
-    category: book?.category || "",
-    coverUrl: book?.coverUrl || "",
+    title: "",
+    author: "",
+    category: "",
+    coverUrl: "",
   });
+
+  // Rating state (separate)
+  const [rating, setRating] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // ✅ Sync form & rating when editing or adding
+  useEffect(() => {
+    if (book) {
+      setForm({
+        title: book.title,
+        author: book.author,
+        category: book.category,
+        coverUrl: book.coverUrl,
+      });
+      setRating(book.rating); // important for edit
+    } else {
+      setForm({
+        title: "",
+        author: "",
+        category: "",
+        coverUrl: "",
+      });
+      setRating(1);
+    }
+  }, [book]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,12 +59,19 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
       return;
     }
 
+    if (rating === 0) {
+      setError("Please select a rating");
+      return;
+    }
+
     try {
       setLoading(true);
 
+      const payload = { ...form, rating };
+
       const savedBook = book
-        ? await updateBook({ ...book, ...form, rating: Number(form.rating) })
-        : await addBook({ ...form, rating: Number(form.rating) });
+        ? await updateBook({ ...book, ...payload })
+        : await addBook(payload);
 
       onSuccess(savedBook);
       onClose();
@@ -63,26 +95,24 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
           placeholder="Title"
           onChange={handleChange}
         />
+
         <input
           name="author"
           value={form.author}
           placeholder="Author"
           onChange={handleChange}
         />
-        <input
-          name="rating"
-          type="number"
-          min="1"
-          max="5"
-          value={form.rating}
-          onChange={handleChange}
-        />
+
+        <label>Rating</label>
+        <RatingStars value={rating} editable onChange={setRating} />
+
         <input
           name="category"
           value={form.category}
           placeholder="Category"
           onChange={handleChange}
         />
+
         <input
           name="coverUrl"
           value={form.coverUrl}
