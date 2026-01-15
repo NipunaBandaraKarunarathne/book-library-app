@@ -13,7 +13,7 @@ export default function SearchBar({
   placeholder = "Search by title or author",
 }: SearchBarProps) {
   return (
-    <div className="relative w-full max-w-md">
+    <div className="relative w-full">
       {/* Magnifying glass icon */}
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
         <IoSearchSharp />
@@ -25,8 +25,10 @@ export default function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="
-          w-full
-          pl-10        
+        w-full
+           md:w-600px
+          
+          pl-10         
           pr-4
           py-2
           rounded-lg
@@ -37,7 +39,7 @@ export default function SearchBar({
           focus:ring-blue-500
           focus:border-blue-500
           placeholder-gray-400
-          text-gray-800  /* dark text so you can see what you type */
+          text-gray-800
           shadow-sm
           transition
         "
@@ -45,3 +47,4 @@ export default function SearchBar({
     </div>
   );
 }
+

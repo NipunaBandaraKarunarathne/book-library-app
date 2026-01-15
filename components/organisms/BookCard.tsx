@@ -7,9 +7,10 @@ interface Props {
   view: "grid" | "list";
   onEdit: (book: Book) => void;
   onDelete: (book: Book) => void;
+  onSelect?: (book: Book) => void; 
 }
 
-export default function BookCard({ book, view, onEdit, onDelete }: Props) {
+export default function BookCard({ book, view, onEdit, onDelete ,onSelect}: Props) {
   return (
     <article
       className={`relative rounded-xl bg-white p-4 shadow-md transition-shadow hover:shadow-xl ${
@@ -17,6 +18,7 @@ export default function BookCard({ book, view, onEdit, onDelete }: Props) {
           ? "flex flex-col"
           : "flex items-start gap-4"
       }`}
+      onClick={() => onSelect?.(book)} 
     >
       {/* Actions */}
       <div className="absolute right-3 top-3 flex gap-2">

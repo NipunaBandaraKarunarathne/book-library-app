@@ -65,6 +65,7 @@ export default function HomePage() {
           onAdd={() => setAddingBook(true)}
           onEdit={(book) => setEditingBook(book)}
           onDelete={(book) => setBookToDelete(book)}
+          onToggleView={() => setView(view === "grid" ? "list" : "grid")}
         />
       </main>
 
