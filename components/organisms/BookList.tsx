@@ -2,7 +2,7 @@
 
 import { Book } from "@/types/book";
 import BookCard from "./BookCard";
-import { Button } from "flowbite-react";
+import { IoMdAdd } from "react-icons/io";
 
 interface Props {
   books: Book[];
@@ -21,7 +21,6 @@ export default function BookList({
   onDelete,
   onAdd,
 }: Props) {
-  // Filter books by search
   const filtered = books.filter(
     (b) =>
       b.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -29,15 +28,22 @@ export default function BookList({
   );
 
   return (
-    <section className="space-y-4">
-      {/* Top bar: Add button + count */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-800">
-          Books ({filtered.length})
+    <section className="space-y-6">
+      {/* Top bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {/* Book count */}
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 flex-1 min-w-[120px]">
+          Books <span className="text-blue-600">{filtered.length}</span>
         </h2>
 
-    
-        <Button outline type="button"  onClick={onAdd}>Add</Button>
+        {/* Add button */}
+        <button
+          onClick={onAdd}
+          className="flex items-center gap-2 rounded-md bg-blue-600 px-3 sm:px-4 py-2 text-white text-sm sm:text-base font-medium shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+        >
+      <IoMdAdd />
+          Add Book
+        </button>
       </div>
 
       {/* Book grid/list */}
@@ -67,5 +73,3 @@ export default function BookList({
     </section>
   );
 }
-
-
