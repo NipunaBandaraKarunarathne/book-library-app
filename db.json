@@ -39,6 +39,38 @@
       "category": "LLM",
       "coverUrl": "https://picsum.photos/200/300?8",
       "rating": 3
+    },
+    {
+      "id": "6175",
+      "title": "test",
+      "author": "test-author",
+      "category": "test",
+      "coverUrl": "https://picsum.photos/200/300?8",
+      "rating": 3
+    },
+    {
+      "id": "b76d",
+      "title": "test-3",
+      "author": "test3-author",
+      "category": "test",
+      "coverUrl": "https://picsum.photos/200/300?8",
+      "rating": 1
+    },
+    {
+      "id": "5fb9",
+      "title": "testtet",
+      "author": "test",
+      "category": "tre",
+      "coverUrl": "https://picsum.photos/200/300?8",
+      "rating": 1
+    },
+    {
+      "title": "sdsdsad",
+      "author": "asdasfasdsadfa",
+      "category": "dafafa",
+      "coverUrl": "",
+      "rating": 2,
+      "id": "2jHOIot"
     }
   ]
 }

@@ -1,6 +1,33 @@
 import { Book } from "@/types/book";
 import { API_URLS } from "@/constents/config";
 
+
+const PAGE_SIZE = 6;
+
+export async function getBooksPaginated(page: number) {
+  try {
+    const res = await fetch(
+      `${API_URLS.BOOKS}?_page=${page}&_limit=${PAGE_SIZE}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch paginated books");
+    }
+
+    const books: Book[] = await res.json();
+
+   
+    const total = Number(res.headers.get("X-Total-Count"));
+
+    console.log("TOTAL FROM HEADER:", total);
+
+    return { books, total };
+  } catch (error: any) {
+    console.error("getBooksPaginated error:", error);
+    throw error;
+  }
+}
+
 export async function getBooks(): Promise<Book[]> {
   try {
     const res = await fetch(API_URLS.BOOKS);
