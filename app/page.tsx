@@ -1,65 +1,169 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import NavBar from "@/components/templates/NavBar";
+import BookList from "@/components/organisms/BookList";
+import BookForm from "@/components/organisms/BookForm";
+import { Book } from "@/types/book";
+import DeleteDialog from "@/components/molecules/DeleteDialog";
+import { deleteBook, getBooksPaginated } from "@/services/bookService";
+import ToastContainer from "@/components/molecules/ToastContainer";
+import { useToast } from "@/hooks/useToast";
+import Pagination from "@/components/molecules/Pagination";
+
+const PAGE_SIZE = 6;
+
+export default function HomePage() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const [search, setSearch] = useState("");
+
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
+  const [addingBook, setAddingBook] = useState(false);
+
+  const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
+  const { toasts, addToast } = useToast();
+
+  // Pagination
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    fetchBooks(page, search); // send search term
+  }, [page, search]);
+
+  /** Fetch books for current page */
+  async function fetchBooks(pageNo = page, searchTerm = search) {
+    try {
+      const { books: fetchedBooks, total } = await getBooksPaginated(
+        pageNo,
+        PAGE_SIZE,
+        searchTerm
+      );
+
+      setBooks(fetchedBooks);
+      setTotal(total);
+    } catch (error: any) {
+      console.error("fetchBooks error:", error);
+      addToast(error.message || "Failed to load books", "error");
+    }
+  }
+
+  const refresh = () => fetchBooks(page);
+
+  /** Delete book */
+  async function handleDeleteConfirm() {
+    if (!bookToDelete) return;
+
+    try {
+      await deleteBook(bookToDelete.id);
+      addToast("Book deleted successfully!", "success");
+
+      if (books.length === 1 && page > 1) {
+        setPage(page - 1);
+      } else {
+        refresh();
+      }
+
+      setBookToDelete(null);
+    } catch (err) {
+      console.error(err);
+      addToast("Failed to delete book", "error");
+    }
+  }
+
+  /** Add new book */
+  async function handleAddSuccess(newBook: Book) {
+    addToast("Book added successfully!", "success");
+
+    if (!newBook.createdAt) {
+      newBook.createdAt = new Date().toISOString();
+    }
+
+    // add to top of first page
+    if (page === 1) {
+      setBooks((prev) => [newBook, ...prev.slice(0, PAGE_SIZE - 1)]);
+    }
+
+    setTotal((prev) => prev + 1);
+
+    // Fetch first page from backend to sync
+    setPage(1);
+    fetchBooks(1);
+
+    setAddingBook(false);
+  }
+
+  /** Edit book */
+  async function handleEditSuccess(updatedBook: Book) {
+    addToast("Book updated successfully!", "success");
+
+    // Keep current page and refresh
+    fetchBooks(page);
+
+    setEditingBook(null);
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <NavBar
+        view={view}
+        onToggleView={() => setView(view === "grid" ? "list" : "grid")}
+        // onSearch={setSearch}
+        onSearch={(val) => {
+          setSearch(val);
+          setPage(1); // reset to first page for new search
+        }}
+      />
+
+      <main className="p-4">
+        <BookList
+          books={books}
+          total={total}
+          view={view}
+          search={search}
+          onAdd={() => setAddingBook(true)}
+          onEdit={(book) => setEditingBook(book)}
+          onDelete={(book) => setBookToDelete(book)}
+          onToggleView={() => setView(view === "grid" ? "list" : "grid")}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        <Pagination
+          page={page}
+          total={total}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+        />
       </main>
-    </div>
+
+      {/* ADD BOOK */}
+      {addingBook && (
+        <BookForm
+          onClose={() => setAddingBook(false)}
+          onSuccess={handleAddSuccess}
+        />
+      )}
+
+      {/* EDIT BOOK */}
+      {editingBook && (
+        <BookForm
+          book={editingBook}
+          onClose={() => setEditingBook(null)}
+          onSuccess={handleEditSuccess}
+        />
+      )}
+
+      {/* DELETE CONFIRM */}
+      {bookToDelete && (
+        <DeleteDialog
+          title={bookToDelete.title}
+          onCancel={() => setBookToDelete(null)}
+          onConfirm={handleDeleteConfirm}
+        />
+      )}
+
+      {/* Toasts */}
+      <ToastContainer toasts={toasts} />
+    </>
   );
 }

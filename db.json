@@ -1,0 +1,67 @@
+{
+  "books": [
+    {
+      "title": "Java for Advance learners",
+      "author": "Nipuna",
+      "category": "java",
+      "coverUrl": "",
+      "rating": 5,
+      "createdAt": "2026-01-16T10:47:54.479Z",
+      "id": 1
+    },
+    {
+      "title": "Python",
+      "author": "Sanjeewa",
+      "category": "python",
+      "coverUrl": "",
+      "rating": 4,
+      "createdAt": "2026-01-16T10:52:13.317Z",
+      "id": 2
+    },
+    {
+      "title": "Go lang",
+      "author": "Samadhi liyana",
+      "category": "go lang",
+      "coverUrl": "",
+      "rating": 4,
+      "createdAt": "2026-01-16T10:55:37.717Z",
+      "id": 3
+    },
+    {
+      "title": "test",
+      "author": "test-author",
+      "category": "test",
+      "coverUrl": "",
+      "rating": 3,
+      "createdAt": "2026-01-16T10:52:04.804Z",
+      "id": 4
+    },
+    {
+      "title": "HTML",
+      "author": "Arfath Mislee",
+      "category": "html",
+      "coverUrl": "",
+      "rating": 3,
+      "createdAt": "2026-01-16T11:08:06.746Z",
+      "id": 5
+    },
+    {
+      "title": "CSS",
+      "author": "Arfath hamzi",
+      "category": "css",
+      "coverUrl": "",
+      "rating": 4,
+      "createdAt": "2026-01-16T11:08:28.322Z",
+      "id": 6
+    },
+    {
+      "title": "JavaScript",
+      "author": "Nipuna karunarthne",
+      "category": "javascript",
+      "coverUrl": "",
+      "rating": 2,
+      "createdAt": "2026-01-16T11:08:49.905Z",
+      "id": 7
+    }
+  ]
+}
