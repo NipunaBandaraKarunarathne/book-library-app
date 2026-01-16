@@ -6,7 +6,8 @@ const PAGE_SIZE = 6;
 
 export async function getBooksPaginated(
   page: number,
-  pageSize = 6
+  pageSize = 6,
+  search?: string
 ) {
   try {
     const params = new URLSearchParams({
@@ -15,6 +16,11 @@ export async function getBooksPaginated(
       _sort: "createdAt",
       _order: "desc", // newest first
     });
+
+       // Add search query if provided
+    if (search) {
+      params.append("q", search); // JSON Server supports `q` for full-text search
+    }
 
    // const res = await fetch(`http://localhost:4000/books?${params.toString()}`);
     const res = await fetch(`${API_URLS.BOOKS}?${params.toString()}`);

@@ -35,6 +35,33 @@
       "rating": 3,
       "createdAt": "2026-01-16T10:52:04.804Z",
       "id": 4
+    },
+    {
+      "title": "HTML",
+      "author": "Arfath Mislee",
+      "category": "html",
+      "coverUrl": "",
+      "rating": 3,
+      "createdAt": "2026-01-16T11:08:06.746Z",
+      "id": 5
+    },
+    {
+      "title": "CSS",
+      "author": "Arfath hamzi",
+      "category": "css",
+      "coverUrl": "",
+      "rating": 4,
+      "createdAt": "2026-01-16T11:08:28.322Z",
+      "id": 6
+    },
+    {
+      "title": "JavaScript",
+      "author": "Nipuna karunarthne",
+      "category": "javascript",
+      "coverUrl": "",
+      "rating": 2,
+      "createdAt": "2026-01-16T11:08:49.905Z",
+      "id": 7
     }
   ]
 }

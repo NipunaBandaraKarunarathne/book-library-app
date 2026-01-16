@@ -28,17 +28,17 @@ export default function HomePage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
 
- 
   useEffect(() => {
-    fetchBooks(page);
-  }, [page]);
+    fetchBooks(page, search); // send search term
+  }, [page, search]);
 
   /** Fetch books for current page */
-  async function fetchBooks(pageNo = page) {
+  async function fetchBooks(pageNo = page, searchTerm = search) {
     try {
       const { books: fetchedBooks, total } = await getBooksPaginated(
         pageNo,
-        PAGE_SIZE
+        PAGE_SIZE,
+        searchTerm
       );
 
       setBooks(fetchedBooks);
@@ -59,7 +59,6 @@ export default function HomePage() {
       await deleteBook(bookToDelete.id);
       addToast("Book deleted successfully!", "success");
 
-      
       if (books.length === 1 && page > 1) {
         setPage(page - 1);
       } else {
@@ -76,7 +75,6 @@ export default function HomePage() {
   /** Add new book */
   async function handleAddSuccess(newBook: Book) {
     addToast("Book added successfully!", "success");
-
 
     if (!newBook.createdAt) {
       newBook.createdAt = new Date().toISOString();
@@ -111,7 +109,11 @@ export default function HomePage() {
       <NavBar
         view={view}
         onToggleView={() => setView(view === "grid" ? "list" : "grid")}
-        onSearch={setSearch}
+        // onSearch={setSearch}
+        onSearch={(val) => {
+          setSearch(val);
+          setPage(1); // reset to first page for new search
+        }}
       />
 
       <main className="p-4">
