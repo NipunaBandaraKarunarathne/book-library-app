@@ -6,11 +6,10 @@ import BookList from "@/components/organisms/BookList";
 import BookForm from "@/components/organisms/BookForm";
 import { Book } from "@/types/book";
 import DeleteDialog from "@/components/molecules/DeleteDialog";
-import { deleteBook, getBooks } from "@/services/bookService";
+import { deleteBook, getBooksPaginated } from "@/services/bookService";
 import ToastContainer from "@/components/molecules/ToastContainer";
 import { useToast } from "@/hooks/useToast";
 import Pagination from "@/components/molecules/Pagination";
-import { getBooksPaginated } from "@/services/bookService";
 
 const PAGE_SIZE = 6;
 
@@ -25,49 +24,70 @@ export default function HomePage() {
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
   const { toasts, addToast } = useToast();
 
-  //pagination
+  // Pagination
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
 
-useEffect(() => {
-  fetchBooks(page);
-}, [page]);
+  // Fetch books on page change
+  useEffect(() => {
+    fetchBooks(page);
+  }, [page]);
 
-
-
-  async function fetchBooks(pageNo = page) {
-    try {
-      // setLoading(true);
-
-      const { books, total } = await getBooksPaginated(pageNo);
-
-      setBooks(books);
-      setTotal(total);
-      console.log({ pageNo, books, total });
-    } catch (error: any) {
-      console.error("fetchBooks error:", error);
-
-      addToast(error.message || "Failed to load books", "error");
-    } finally {
-      //setLoading(false);
-    }
+  /** Fetch paginated books with newest first */
+ async function fetchBooks(pageNo = page) {
+  try {
+    const { books: fetchedBooks, total } = await getBooksPaginated(pageNo);
+    setBooks(fetchedBooks);
+    setTotal(total);
+  } catch (error: any) {
+    console.error("fetchBooks error:", error);
+    addToast(error.message || "Failed to load books", "error");
   }
+}
+
 
   const refresh = () => fetchBooks(page);
 
+  /** Delete book */
   async function handleDeleteConfirm() {
     if (!bookToDelete) return;
 
     try {
       await deleteBook(bookToDelete.id);
-      setBooks((prev) => prev.filter((b) => b.id !== bookToDelete.id));
       addToast("Book deleted successfully!", "success");
-      refresh();
+
+      // Refresh first page if current page is affected
+      if (books.length === 1 && page > 1) {
+        setPage(page - 1);
+      } else {
+        refresh();
+      }
+
       setBookToDelete(null);
     } catch (err) {
       console.error(err);
       addToast("Failed to delete book", "error");
     }
+  }
+
+  /** Add new book with optimistic update */
+  function handleAddSuccess(newBook: Book) {
+  addToast("Book added successfully!", "success");
+
+  setPage(1);       // switch to first page
+  fetchBooks(1);    // fetch newest books
+
+  setAddingBook(false);
+  }
+
+  /** Edit book */
+  function handleEditSuccess(updatedBook: Book) {
+    setBooks((prev) =>
+      prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
+    );
+    addToast("Book updated successfully!", "success");
+    refresh();
+    setEditingBook(null);
   }
 
   return (
@@ -88,6 +108,7 @@ useEffect(() => {
           onDelete={(book) => setBookToDelete(book)}
           onToggleView={() => setView(view === "grid" ? "list" : "grid")}
         />
+
         <Pagination
           page={page}
           total={total}
@@ -100,12 +121,7 @@ useEffect(() => {
       {addingBook && (
         <BookForm
           onClose={() => setAddingBook(false)}
-          onSuccess={(newBook) => {
-            setBooks((prev) => [...prev, newBook]);
-            addToast("Book added successfully!", "success");
-            refresh();
-            setAddingBook(false);
-          }}
+          onSuccess={handleAddSuccess}
         />
       )}
 
@@ -114,14 +130,7 @@ useEffect(() => {
         <BookForm
           book={editingBook}
           onClose={() => setEditingBook(null)}
-          onSuccess={(updatedBook) => {
-            setBooks((prev) =>
-              prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
-            );
-            addToast("Book updated successfully!", "success");
-            refresh();
-            setEditingBook(null);
-          }}
+          onSuccess={handleEditSuccess}
         />
       )}
 

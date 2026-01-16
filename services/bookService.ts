@@ -4,29 +4,26 @@ import { API_URLS } from "@/constents/config";
 
 const PAGE_SIZE = 6;
 
-export async function getBooksPaginated(page: number) {
-  try {
-    const res = await fetch(
-      `${API_URLS.BOOKS}?_page=${page}&_limit=${PAGE_SIZE}`
-    );
+export async function getBooksPaginated(
+  page: number,
+  pageSize = 6
+) {
+  const params = new URLSearchParams({
+    _page: page.toString(),
+    _limit: pageSize.toString(),
+    _sort: "id",
+    _order: "desc", // newest first
+  });
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch paginated books");
-    }
+  const res = await fetch(`http://localhost:4000/books?${params.toString()}`);
+  if (!res.ok) throw new Error(`Failed to fetch books: ${res.statusText}`);
 
-    const books: Book[] = await res.json();
+  const data = await res.json();
+  const total = parseInt(res.headers.get("X-Total-Count") || "0");
 
-   
-    const total = Number(res.headers.get("X-Total-Count"));
-
-    console.log("TOTAL FROM HEADER:", total);
-
-    return { books, total };
-  } catch (error: any) {
-    console.error("getBooksPaginated error:", error);
-    throw error;
-  }
+  return { books: data, total };
 }
+
 
 export async function getBooks(): Promise<Book[]> {
   try {
