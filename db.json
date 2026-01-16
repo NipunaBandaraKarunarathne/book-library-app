@@ -12,7 +12,7 @@
       "id": "2",
       "title": "Atomic Habits",
       "author": "James Clear",
-      "rating": 3,
+      "rating": 4,
       "category": "Self Help",
       "coverUrl": "https://picsum.photos/200/300?2"
     },
@@ -29,7 +29,15 @@
       "title": "test-1",
       "author": "Sanjeewa",
       "category": "life",
-      "coverUrl": "https://picsum.photos/200/300?1",
+      "coverUrl": "https://picsum.photos/200/300?9",
+      "rating": 3
+    },
+    {
+      "id": "e7dd",
+      "title": "Machine learning",
+      "author": "L jayasekara",
+      "category": "LLM",
+      "coverUrl": "https://picsum.photos/200/300?8",
       "rating": 3
     }
   ]

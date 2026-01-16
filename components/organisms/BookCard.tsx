@@ -1,3 +1,5 @@
+"use client";
+
 import { Book } from "@/types/book";
 import RatingStars from "@/components/molecules/RatingStars";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
@@ -7,34 +9,46 @@ interface Props {
   view: "grid" | "list";
   onEdit: (book: Book) => void;
   onDelete: (book: Book) => void;
-  onSelect?: (book: Book) => void; 
+  onSelect?: (book: Book) => void;
 }
 
-export default function BookCard({ book, view, onEdit, onDelete ,onSelect}: Props) {
+export default function BookCard({
+  book,
+  view,
+  onEdit,
+  onDelete,
+  onSelect,
+}: Props) {
   return (
     <article
-      className={`relative rounded-xl bg-white p-4 shadow-md transition-shadow hover:shadow-xl ${
+      onClick={() => onSelect?.(book)}
+      className={`relative rounded-xl bg-white p-4 shadow-md transition-shadow hover:shadow-xl cursor-pointer ${
         view === "grid"
           ? "flex flex-col"
           : "flex items-start gap-4"
       }`}
-      onClick={() => onSelect?.(book)} 
     >
       {/* Actions */}
       <div className="absolute right-3 top-3 flex gap-2">
-        {/* Edit Button */}
+        {/* Edit */}
         <button
-          onClick={() => onEdit(book)}
-          className="flex items-center justify-center rounded-full bg-blue-500 p-2 text-white shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+          onClick={(e) => {
+            e.stopPropagation(); 
+            onEdit(book);
+          }}
+          className="rounded-full bg-blue-500 p-2 text-white shadow hover:bg-blue-600 focus:ring-2 focus:ring-blue-300"
           title="Edit Book"
         >
           <FiEdit size={16} />
         </button>
 
-        {/* Delete Button */}
+        {/* Delete */}
         <button
-          onClick={() => onDelete(book)}
-          className="flex items-center justify-center rounded-full bg-red-500 p-2 text-white shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition"
+          onClick={(e) => {
+            e.stopPropagation(); 
+            onDelete(book);
+          }}
+          className="rounded-full bg-red-500 p-2 text-white shadow hover:bg-red-600 focus:ring-2 focus:ring-red-300"
           title="Delete Book"
         >
           <FiTrash2 size={16} />
@@ -62,7 +76,7 @@ export default function BookCard({ book, view, onEdit, onDelete ,onSelect}: Prop
 
         <RatingStars value={book.rating} />
 
-        <span className="mt-1 inline-block w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+        <span className="mt-1 w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
           {book.category}
         </span>
       </div>
