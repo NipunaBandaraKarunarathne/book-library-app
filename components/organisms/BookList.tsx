@@ -8,6 +8,7 @@ import { IoGrid, IoList } from "react-icons/io5";
 
 interface Props {
   books: Book[];
+  total: number;
   view: "grid" | "list";
   search: string;
   onEdit: (book: Book) => void;
@@ -18,6 +19,7 @@ interface Props {
 
 export default function BookList({
   books,
+  total,
   view,
   search,
   onEdit,
@@ -39,7 +41,7 @@ export default function BookList({
       <div className="flex flex-wrap items-center justify-between gap-3">
         {/* Book count */}
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800 flex-1 min-w-[120px]">
-          Books <span className="text-blue-600">{filtered.length}</span>
+          Books <span className="text-blue-600">{total}</span>
         </h2>
 
         {/* Actions */}
@@ -81,11 +83,9 @@ export default function BookList({
       {filtered.length === 0 ? (
         /* Empty state */
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          
           <h3 className="text-lg font-semibold text-gray-700">
             No books found
           </h3>
-      
         </div>
       ) : (
         /* Book list */

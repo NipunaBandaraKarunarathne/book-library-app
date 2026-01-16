@@ -8,20 +8,26 @@ export async function getBooksPaginated(
   page: number,
   pageSize = 6
 ) {
-  const params = new URLSearchParams({
-    _page: page.toString(),
-    _limit: pageSize.toString(),
-    _sort: "id",
-    _order: "desc", // newest first
-  });
+  try {
+    const params = new URLSearchParams({
+      _page: page.toString(),
+      _limit: pageSize.toString(),
+      _sort: "createdAt",
+      _order: "desc", // newest first
+    });
 
-  const res = await fetch(`http://localhost:4000/books?${params.toString()}`);
-  if (!res.ok) throw new Error(`Failed to fetch books: ${res.statusText}`);
+   // const res = await fetch(`http://localhost:4000/books?${params.toString()}`);
+    const res = await fetch(`${API_URLS.BOOKS}?${params.toString()}`);
+    if (!res.ok) throw new Error(`Failed to fetch books: ${res.statusText}`);
 
-  const data = await res.json();
-  const total = parseInt(res.headers.get("X-Total-Count") || "0");
+    const data = await res.json();
+    const total = parseInt(res.headers.get("X-Total-Count") || "0");
 
-  return { books: data, total };
+    return { books: data, total };
+  } catch (error: any) {
+    console.error("getBooksPaginated error:", error);
+    throw new Error(error.message || "Failed to fetch books");
+  }
 }
 
 

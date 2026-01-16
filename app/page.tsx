@@ -28,23 +28,26 @@ export default function HomePage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
 
-  // Fetch books on page change
+ 
   useEffect(() => {
     fetchBooks(page);
   }, [page]);
 
-  /** Fetch paginated books with newest first */
- async function fetchBooks(pageNo = page) {
-  try {
-    const { books: fetchedBooks, total } = await getBooksPaginated(pageNo);
-    setBooks(fetchedBooks);
-    setTotal(total);
-  } catch (error: any) {
-    console.error("fetchBooks error:", error);
-    addToast(error.message || "Failed to load books", "error");
-  }
-}
+  /** Fetch books for current page */
+  async function fetchBooks(pageNo = page) {
+    try {
+      const { books: fetchedBooks, total } = await getBooksPaginated(
+        pageNo,
+        PAGE_SIZE
+      );
 
+      setBooks(fetchedBooks);
+      setTotal(total);
+    } catch (error: any) {
+      console.error("fetchBooks error:", error);
+      addToast(error.message || "Failed to load books", "error");
+    }
+  }
 
   const refresh = () => fetchBooks(page);
 
@@ -56,7 +59,7 @@ export default function HomePage() {
       await deleteBook(bookToDelete.id);
       addToast("Book deleted successfully!", "success");
 
-      // Refresh first page if current page is affected
+      
       if (books.length === 1 && page > 1) {
         setPage(page - 1);
       } else {
@@ -70,23 +73,36 @@ export default function HomePage() {
     }
   }
 
-  /** Add new book with optimistic update */
-  function handleAddSuccess(newBook: Book) {
-  addToast("Book added successfully!", "success");
+  /** Add new book */
+  async function handleAddSuccess(newBook: Book) {
+    addToast("Book added successfully!", "success");
 
-  setPage(1);       // switch to first page
-  fetchBooks(1);    // fetch newest books
 
-  setAddingBook(false);
+    if (!newBook.createdAt) {
+      newBook.createdAt = new Date().toISOString();
+    }
+
+    // add to top of first page
+    if (page === 1) {
+      setBooks((prev) => [newBook, ...prev.slice(0, PAGE_SIZE - 1)]);
+    }
+
+    setTotal((prev) => prev + 1);
+
+    // Fetch first page from backend to sync
+    setPage(1);
+    fetchBooks(1);
+
+    setAddingBook(false);
   }
 
   /** Edit book */
-  function handleEditSuccess(updatedBook: Book) {
-    setBooks((prev) =>
-      prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
-    );
+  async function handleEditSuccess(updatedBook: Book) {
     addToast("Book updated successfully!", "success");
-    refresh();
+
+    // Keep current page and refresh
+    fetchBooks(page);
+
     setEditingBook(null);
   }
 
@@ -101,6 +117,7 @@ export default function HomePage() {
       <main className="p-4">
         <BookList
           books={books}
+          total={total}
           view={view}
           search={search}
           onAdd={() => setAddingBook(true)}

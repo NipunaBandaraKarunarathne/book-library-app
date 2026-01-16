@@ -63,7 +63,7 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
     try {
       setLoading(true);
 
-      const payload = { ...form, rating };
+      const payload = { ...form, rating, createdAt: new Date().toISOString() };
 
       const savedBook = book
         ? await updateBook({ ...book, ...payload })
@@ -105,7 +105,7 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
             name="title"
             value={form.title}
             onChange={handleChange}
-           // placeholder="Book title"
+            // placeholder="Book title"
             className="w-full  text-black rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
@@ -141,7 +141,7 @@ export default function BookForm({ book, onSuccess, onClose }: Props) {
             name="category"
             value={form.category}
             onChange={handleChange}
-          //  placeholder="Category"
+            //  placeholder="Category"
             className="w-full text-black rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>

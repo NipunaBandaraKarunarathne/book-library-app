@@ -1,124 +1,40 @@
 {
   "books": [
     {
-      "id": "1",
-      "title": "Clean Code",
-      "author": "Robert C. Martin",
-      "rating": 5,
-      "category": "Programming",
-      "coverUrl": "https://picsum.photos/200/300?1"
-    },
-    {
-      "id": "2",
-      "title": "Atomic Habits",
-      "author": "James Clear",
-      "rating": 4,
-      "category": "Self Help",
-      "coverUrl": "https://picsum.photos/200/300?2"
-    },
-    {
-      "id": "c49f",
-      "title": "Java Programming",
-      "author": "Nipuna Karunarathne",
-      "rating": 5,
-      "category": "Programming",
-      "coverUrl": "https://picsum.photos/200/300?3"
-    },
-    {
-      "id": "94ae",
-      "title": "test-1",
-      "author": "Sanjeewa",
-      "category": "life",
-      "coverUrl": "https://picsum.photos/200/300?9",
-      "rating": 3
-    },
-    {
-      "id": "e7dd",
-      "title": "Machine learning",
-      "author": "L jayasekara",
-      "category": "LLM",
-      "coverUrl": "https://picsum.photos/200/300?8",
-      "rating": 3
-    },
-    {
-      "id": "6175",
-      "title": "test",
-      "author": "test-author",
-      "category": "test",
-      "coverUrl": "https://picsum.photos/200/300?8",
-      "rating": 3
-    },
-    {
-      "id": "b76d",
-      "title": "test-3",
-      "author": "test3-author",
-      "category": "test",
-      "coverUrl": "https://picsum.photos/200/300?8",
-      "rating": 1
-    },
-    {
-      "id": "5fb9",
-      "title": "testtet",
-      "author": "test",
-      "category": "tre",
-      "coverUrl": "https://picsum.photos/200/300?8",
-      "rating": 1
-    },
-    {
-      "title": "sdsdsad",
-      "author": "asdasfasdsadfa",
-      "category": "dafafa",
-      "coverUrl": "",
-      "rating": 2,
-      "id": "2jHOIot"
-    },
-    {
-      "title": "sdasdasd",
-      "author": "asdasddsa",
-      "category": "asdasdsad",
-      "coverUrl": "",
-      "rating": 1,
-      "id": "-0Vp0im"
-    },
-    {
-      "title": "my java notes",
-      "author": "nipuna",
+      "title": "Java for Advance learners",
+      "author": "Nipuna",
       "category": "java",
       "coverUrl": "",
       "rating": 5,
-      "id": "nQecZzu"
+      "createdAt": "2026-01-16T10:47:54.479Z",
+      "id": 1
     },
     {
-      "title": "GOLANG",
-      "author": "Nipuna",
-      "category": "golang",
-      "coverUrl": "",
-      "rating": 1,
-      "id": "hN_xD2v"
-    },
-    {
-      "title": "python ",
-      "author": "nipuna",
-      "category": "py",
+      "title": "Python",
+      "author": "Sanjeewa",
+      "category": "python",
       "coverUrl": "",
       "rating": 4,
-      "id": "C3AaPT1"
+      "createdAt": "2026-01-16T10:52:13.317Z",
+      "id": 2
     },
     {
-      "title": "my note",
-      "author": "roy",
-      "category": "note",
-      "coverUrl": "",
-      "rating": 1,
-      "id": "pnGeo9U"
-    },
-    {
-      "title": "Rust",
-      "author": "james keel",
-      "category": "rust",
+      "title": "Go lang",
+      "author": "Samadhi liyana",
+      "category": "go lang",
       "coverUrl": "",
       "rating": 4,
-      "id": "qEEDkkI"
+      "createdAt": "2026-01-16T10:55:37.717Z",
+      "id": 3
+    },
+    {
+      "title": "test",
+      "author": "test-author",
+      "category": "test",
+      "coverUrl": "",
+      "rating": 3,
+      "createdAt": "2026-01-16T10:52:04.804Z",
+      "id": 4
     }
   ]
 }

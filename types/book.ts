@@ -5,4 +5,5 @@ export interface Book {
   rating: number;
   category: string;
   coverUrl: string;
+  createdAt?: string
 }
